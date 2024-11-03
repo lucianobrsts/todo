@@ -1,7 +1,7 @@
 import './App.css';
 
 import { useState, useEffect } from 'react'
-import { BsTrash, BsBookmarkCheck, BsBookmarkCheckFill } from 'react-icons'
+import { BsTrash, BsBookmarkCheck, BsBookmarkCheckFill } from 'react-icons/bs'
 
 const API = "http://localhost:5000"
 
@@ -12,9 +12,25 @@ function App() {
   const [todos, setTodos] = useState("")
   const [loading, setLoading] = useState(false)
 
+  //Load todos on page load
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true)
+
+      const res = await fetch(API + "/todos")
+        .then((res) => res.json())
+        .then((data) => data)
+        .catch((err) => console.log(err))
+
+      setLoading(false)
+      setTodos(res)
+    }
+    loadData()
+  }, [])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     const todo = {
       id: Math.random(),
       title,
@@ -29,9 +45,14 @@ function App() {
         "Content-type": "application/json"
       }
     })
+    setTodos((prevState) => [...prevState, todo])
 
     setTitle("")
     setTime("")
+  }
+
+  if(loading) {
+    return <p>Carregando...</p>
   }
 
   return (
@@ -45,25 +66,25 @@ function App() {
         <form onSubmit={handleSubmit}>
           <div className='form-control'>
             <label htmlFor='title'>O que você vai fazer?</label>
-            <input 
-              type='text' 
-              name='title' 
-              placeholder='Título da tarefa' 
+            <input
+              type='text'
+              name='title'
+              placeholder='Título da tarefa'
               onChange={(e) => setTitle(e.target.value)}
               value={title || ""}
-              required 
+              required
             />
           </div>
-          
+
           <div className='form-control'>
             <label htmlFor='time'>Duração:</label>
-            <input 
-              type='text' 
-              name='time' 
-              placeholder='Tempo estimado (em horas)' 
+            <input
+              type='text'
+              name='time'
+              placeholder='Tempo estimado (em horas)'
               onChange={(e) => setTime(e.target.value)}
               value={time || ""}
-              required 
+              required
             />
           </div>
           <input type='submit' value="Criar Tarefa" />
@@ -73,6 +94,18 @@ function App() {
       <div className="list-todo">
         <h2>Lista de Tarefas:</h2>
         {todos.length === 0 && <p>Não há tarefas cadastradas!</p>}
+        {todos.map((todo) => (
+          <div className="todo" key={todo.id}>
+            <h3 className={todo.done ? "todo-done" : ""}>{todo.title}</h3>
+            <p>Duração: {todo.time}</p>
+            <div>
+              <span>
+                {!todo.done ? <BsBookmarkCheck /> : <BsBookmarkCheckFill />}
+              </span>
+              <BsTrash />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
