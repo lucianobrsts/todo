@@ -12,17 +12,35 @@ function App() {
   const [todos, setTodos] = useState("")
   const [loading, setLoading] = useState(false)
 
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log(title)
+    setTitle("")
+    console.log("enviou!")
+  }
+
   return (
     <div className="App">
       <div className="todo-header">
-        <h2>Insira a sua próxima tarefa:</h2>
-        <form>
-          
-        </form>
+        <h1>React Todo</h1>
       </div>
 
       <div className="form-todo">
-        <p>Formulário</p>
+        <h2>Insira a sua próxima tarefa:</h2>
+        <form onSubmit={handleSubmit}>
+          <div className='form-control'>
+            <label htmlFor='title'>O que você vai fazer?</label>
+            <input 
+              type='text' 
+              name='title' 
+              placeholder='Título da tarefa' 
+              onChange={(e) => setTitle(e.target.value)}
+              value={title || ""}
+              required 
+            />
+          </div>
+          <input type='submit' value="Enviar" />
+        </form>
       </div>
 
       <div className="list-todo">
