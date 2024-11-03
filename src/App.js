@@ -14,9 +14,19 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(title)
+    
+    const todo = {
+      id: Math.random(),
+      title,
+      time,
+      done: false,
+    }
+
+    //Envio para api
+    console.log(todo)
+
     setTitle("")
-    console.log("enviou!")
+    setTime("")
   }
 
   return (
@@ -39,7 +49,19 @@ function App() {
               required 
             />
           </div>
-          <input type='submit' value="Enviar" />
+          
+          <div className='form-control'>
+            <label htmlFor='time'>Duração:</label>
+            <input 
+              type='text' 
+              name='time' 
+              placeholder='Tempo estimado (em horas)' 
+              onChange={(e) => setTime(e.target.value)}
+              value={time || ""}
+              required 
+            />
+          </div>
+          <input type='submit' value="Criar Tarefa" />
         </form>
       </div>
 
